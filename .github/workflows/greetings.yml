@@ -24,6 +24,14 @@ jobs:
         uses: actions/github-script@v5
         with:
           script: |
+            
+            review= await github.rest.pulls.listReviews({
+            owner: context.repo.owner, 
+            repo: context.repo.repo, 
+            pull_number: ${{ env.pr_num }},
+              });
+            console.log(review);
+            
             const string = `Hey \n
             @ydazana\n
             @ilia-intel\n 
