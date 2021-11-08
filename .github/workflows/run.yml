@@ -1,12 +1,40 @@
-name: wf
+name: Log latest release
 on:
- workflow_run:
-    workflows: ["test1"]
-    types: [completed]
- 
-
+  pull_request:
+  pull_request_review:
+  
 jobs:
- on-success:
+  list-issues:
     runs-on: ubuntu-latest
-    steps: 
-     - run:      echo "HERE"
+    steps:
+      - uses: actions/github-script@v5
+        with:
+          script: |
+            const query = `query($owner:String!, $name:String!) {
+              repository(owner:$owner, name:$name){
+              pullRequest(number: 1) {
+                title
+               reviewDecision
+               state
+               reviews(first: 100) {
+                nodes {
+                      state
+                    author {
+                     login
+                  }
+               }
+                }
+                }
+                }
+                 
+            }`;
+            const variables = {
+              owner: context.repo.owner,
+              name: context.repo.repo
+              
+            }
+            const result = await github.graphql(query, variables)
+            console.log(result)
+
+
+
