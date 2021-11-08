@@ -12,7 +12,7 @@ jobs:
           script: |
             const query = `query($owner:String!, $name:String! ,$pr_num:Int!)) {
               repository(owner:$owner, name:$name){
-              pullRequest(number: $pr_num) {
+              pullRequest(number:$pr_num) {
                 title
                reviewDecision
                state
@@ -30,7 +30,7 @@ jobs:
             }`;
             const variables = {
               owner: context.repo.owner,
-              name: context.repo.repo
+              name: context.repo.repo,
               pr_num: 1
               
             }
