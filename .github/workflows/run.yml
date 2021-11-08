@@ -54,7 +54,7 @@ jobs:
             }`
 
             
-                 const result2 = await octokit.graphql(QUERY, variables);
+                 const result2 = await github.graphql(QUERY, variables);
                 
                console.log(result2)
               
