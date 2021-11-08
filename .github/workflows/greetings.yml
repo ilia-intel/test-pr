@@ -25,6 +25,13 @@ jobs:
         with:
           script: |
             
+            pr= await github.rest.pulls.get({
+            owner: context.repo.owner, 
+            repo: context.repo.repo, 
+            pull_number: ${{ env.pr_num }},
+              });
+            console.log(pr);
+            
             review= await github.rest.pulls.listReviews({
             owner: context.repo.owner, 
             repo: context.repo.repo, 
