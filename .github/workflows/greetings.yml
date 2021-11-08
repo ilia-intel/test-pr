@@ -26,39 +26,52 @@ jobs:
         with:
           script: |
             
-            pr= await github.rest.pulls.get({
-            owner: context.repo.owner, 
-            repo: context.repo.repo, 
-            pull_number: ${{ env.pr_num }},
-              });
+             const query = `query($owner:String!, $repo:String! ,$pr_num:Int!) {
+              repository(owner:$owner, name:$repo){
+              pullRequest(number:$pr_num) {
+                title
+               reviewDecision
+               state
+               reviews(first: 100) {
+                nodes {
+                      state
+                    author {
+                     login
+                  }
+               }
+                }
+                }
+                }
+                 
+             }`;
+             const variables = {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pr_num: 1
+              
+             }
             
-            console.log("------------------------------------------------");
-            console.log(pr.data.mergeable);
-            console.log(pr.data.mergeable_state);
-            
-            console.log("--------------------------------------------");
-            
-            
-            console.log(pr);
-            
-            review= await github.rest.pulls.listReviews({
-            owner: context.repo.owner, 
-            repo: context.repo.repo, 
-            pull_number: ${{ env.pr_num }},
-              });
-            console.log(review);
-            
-            const string = `Hey \n
-            @ydazana\n
-            @ilia-intel\n 
-            If you use ${{github.event.number}} you will get the PR number on pull request event. \n
-            If you use ${{github.event.issue.number}} you will get the PR number on any issue event e.g. updates. \n
-            `
-            await github.rest.issues.createComment({
-            owner: context.repo.owner, 
-            repo: context.repo.repo, 
-            issue_number: ${{ env.pr_num }},
-            body: string
-            });
+             const result = await github.graphql(query, variables)
+             console.log(result)
+             console.log(result.repository.pullRequest.reviewDecision)
+             if (result.repository.pullRequest.reviewDecision=="APPROVED")
+             {
+             const string = `Hey \n
+             @ydazana\n
+             @ilia-intel\n 
+             If you use ${{github.event.number}} you will get the PR number on pull request event. \n
+             If you use ${{github.event.issue.number}} you will get the PR number on any issue event e.g. updates. \n
+             `
+             await github.rest.issues.createComment({
+             owner: context.repo.owner, 
+             repo: context.repo.repo, 
+             issue_number: ${{ env.pr_num }},
+             body: string
+             });
+             }
+             else
+             {
+              console.log("NOT APPROVED)
+             }
 
      
