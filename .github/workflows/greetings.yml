@@ -13,8 +13,8 @@ jobs:
  on-success:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    steps: |
-      echo "HERE"
+    steps: 
+     - run:      echo "HERE"
 
  build:
     runs-on: ubuntu-latest
