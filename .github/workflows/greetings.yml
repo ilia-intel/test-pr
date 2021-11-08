@@ -73,5 +73,13 @@ jobs:
              {
               console.log("NOT APPROVED")
              }
-
+             st=await github.rest.checks.listForRef({
+             owner: context.repo.owner, 
+             repo: context.repo.repo, 
+             ref: ${{ github.ref }}
+             
+             });
+              console.log("st")
+          
+            
      
