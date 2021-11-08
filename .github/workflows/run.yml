@@ -54,8 +54,8 @@ jobs:
             }`
 
             
-                 const result = await octokit.graphql(query, variables);
-                const [{ commit: lastCommit }] = result.repository.pullRequest.commits.nodes;
-               console.log(lastCommit.statusCheckRollup.state)
+                 const result2 = await octokit.graphql(QUERY, variables);
+                
+               console.log(result2)
               
 
