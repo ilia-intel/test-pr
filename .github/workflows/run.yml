@@ -10,9 +10,9 @@ jobs:
       - uses: actions/github-script@v5
         with:
           script: |
-            const query = `query($owner:String!, $name:String!) {
+            const query = `query($owner:String!, $name:String! ,$pr_num:Int!)) {
               repository(owner:$owner, name:$name){
-              pullRequest(number: 1) {
+              pullRequest(number: $pr_num) {
                 title
                reviewDecision
                state
@@ -31,10 +31,31 @@ jobs:
             const variables = {
               owner: context.repo.owner,
               name: context.repo.repo
+              pr_num: 1
               
             }
             const result = await github.graphql(query, variables)
             console.log(result)
 
+            const QUERY = `query($owner: String!, $repo: String!, $pr_num: Int!) {
+             repository(owner: $owner, name:$repo) {
+             pullRequest(number:$pr_num) {
+               commits(last: 1) {
+               nodes {
+                   commit {
+                    statusCheckRollup {
+                       state
+                     }
+                 }
+                }
+               }
+               }
+            }
+            }`
 
+            
+                 const result = await octokit.graphql(query, variables);
+                const [{ commit: lastCommit }] = result.repository.pullRequest.commits.nodes;
+               console.log(lastCommit.statusCheckRollup.state)
+              
 
