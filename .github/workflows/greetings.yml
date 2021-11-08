@@ -24,6 +24,8 @@ jobs:
             const string = `Hey \n
             @ydazana\n
             @ilia-intel\n
+            If you use ${{github.event.number}} you will get the PR number on pull request event. \n
+            If you use ${{github.event.issue.number}} you will get the PR number on any issue event e.g. updates. \n
             `
             await github.rest.issues.createComment({
             owner: context.repo.owner, 
