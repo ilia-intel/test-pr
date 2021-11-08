@@ -30,6 +30,12 @@ jobs:
             repo: context.repo.repo, 
             pull_number: ${{ env.pr_num }},
               });
+            
+            console.log("--------------------------------------------");
+            console.log(pr.data.mergeable);
+            console.log("--------------------------------------------");
+            
+            
             console.log(pr);
             
             review= await github.rest.pulls.listReviews({
