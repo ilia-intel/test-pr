@@ -10,7 +10,7 @@ jobs:
       - uses: actions/github-script@v5
         with:
           script: |
-            const query = `query($owner:String!, $repo:String! ,$pr_num:Int!)) {
+            const query = `query($owner:String!, $repo:String! ,$pr_num:Int!) {
               repository(owner:$owner, name:$repo){
               pullRequest(number:$pr_num) {
                 title
