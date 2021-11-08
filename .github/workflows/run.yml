@@ -36,6 +36,8 @@ jobs:
             }
             const result = await github.graphql(query, variables)
             console.log(result)
+            console.log(result.repository.pullRequest.reviewDecision)
+            
 
             const QUERY = `query($owner:String!, $repo:String!, $pr_num:Int!) {
              repository(owner:$owner, name:$repo) {
