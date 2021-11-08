@@ -25,7 +25,7 @@ jobs:
             owner: context.repo.owner, 
             repo: context.repo.repo, 
             issue_number: ${{ env.pr_num }},
-            body: 'Its Success'
+            body: 'Will you get this? @ydazana @ilia-intel'
             });
 
      
