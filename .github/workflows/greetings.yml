@@ -33,6 +33,8 @@ jobs:
             
             console.log("-----------------------------------------------");
             console.log(pr.data.mergeable);
+            console.log(pr.data.mergeable_state);
+            
             console.log("--------------------------------------------");
             
             
