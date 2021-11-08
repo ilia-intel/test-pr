@@ -21,11 +21,15 @@ jobs:
         uses: actions/github-script@v5
         with:
           script: |
+            const string = `Hey \n
+            @ydazana\n
+            @ilia-intel\n
+            `
             await github.rest.issues.createComment({
             owner: context.repo.owner, 
             repo: context.repo.repo, 
             issue_number: ${{ env.pr_num }},
-            body: 'Will you get this? @ydazana @ilia-intel'
+            body: string
             });
 
      
