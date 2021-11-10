@@ -1,0 +1,96 @@
+name: test1
+
+
+on:
+ pull_request:
+    branches: [ main ]
+ pull_request_review:
+   state: [approved]
+    
+
+jobs:
+
+ build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Get Pull Request ID
+        env:
+          TEST_PR_NUMBER: ${{ github.event.number }}
+        run: |
+          export PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+          echo "pr_num=$PR_NUMBER" >> $GITHUB_ENV
+          echo $GITHUB_REF $GITHUB_ACTOR
+          env
+
+      - name: Add Comment to Pull Request if Success
+        if: ${{ success() }}
+        uses: actions/github-script@v5
+        with:
+          script: |
+            
+             ref = ref: ${{ env.GITHUB_REF }}
+             console.log(ref)
+             
+             pr_num=ref.split('/')[2])
+              console.log(pr_num)
+             
+             const query = `query($owner:String!, $repo:String! ,$pr_num:Int!) {
+              repository(owner:$owner, name:$repo){
+              pullRequest(number:$pr_num) {
+                title
+               reviewDecision
+               state
+               reviews(first: 100) {
+                nodes {
+                      state
+                    author {
+                     login
+                  }
+               }
+                }
+                }
+                }
+                 
+             }`;
+             const variables = {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pr_num: 1
+              
+             }
+            
+             const result = await github.graphql(query, variables)
+             console.log(result)
+             console.log(result.repository.pullRequest.reviewDecision)
+             if (result.repository.pullRequest.reviewDecision=="APPROVED")
+             {
+             const string = `Hey \n
+             @ydazana\n
+             @ilia-intel\n 
+             If you use ${{github.event.number}} you will get the PR number on pull request event. \n
+             If you use ${{github.event.issue.number}} you will get the PR number on any issue event e.g. updates. \n
+             `
+             await github.rest.issues.createComment({
+             owner: context.repo.owner, 
+             repo: context.repo.repo, 
+             issue_number: ${{ env.pr_num }},
+             body: string
+             });
+             }
+             else
+             {
+              console.log("NOT APPROVED")
+             }
+             st=await github.rest.checks.listForRef({
+             owner: context.repo.owner, 
+             repo: context.repo.repo, 
+             ref: ${{ github.ref }}
+             
+             });
+              console.log("st")
+          
+            
+     

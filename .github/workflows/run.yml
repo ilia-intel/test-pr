@@ -1,0 +1,65 @@
+name: Log latest release
+on:
+  pull_request:
+  pull_request_review:
+  
+jobs:
+  list-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v5
+        with:
+          script: |
+            const query = `query($owner:String!, $repo:String! ,$pr_num:Int!) {
+              repository(owner:$owner, name:$repo){
+              pullRequest(number:$pr_num) {
+                title
+               reviewDecision
+               state
+               reviews(first: 100) {
+                nodes {
+                      state
+                    author {
+                     login
+                  }
+               }
+                }
+                }
+                }
+                 
+            }`;
+            const variables = {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pr_num: 1
+              
+            }
+            const result = await github.graphql(query, variables)
+            console.log(result)
+            console.log(result.repository.pullRequest.reviewDecision)
+            
+
+            const QUERY = `query($owner:String!, $repo:String!, $pr_num:Int!) {
+             repository(owner:$owner, name:$repo) {
+             pullRequest(number:$pr_num) {
+               commits(last: 1) {
+               nodes {
+                   commit {
+                    statusCheckRollup {
+                       state
+                     }
+                 }
+                }
+               }
+               }
+            }
+            }`;
+
+            
+                 const result2 = await github.graphql(QUERY, variables);
+                
+               console.log( result2.repository.pullRequest.commits.nodes)
+                const [{ commit: lastCommit }] = result2.repository.pullRequest.commits.nodes;
+                console.log(lastCommit.statusCheckRollup.state)
+    
+
