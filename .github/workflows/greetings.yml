@@ -28,6 +28,12 @@ jobs:
         with:
           script: |
             
+             ref = ref: ${{ env.GITHUB_REF }}
+             console.log(ref)
+             
+             pr_num=ref.split('/')[2])
+              console.log(pr_num)
+             
              const query = `query($owner:String!, $repo:String! ,$pr_num:Int!) {
               repository(owner:$owner, name:$repo){
               pullRequest(number:$pr_num) {
@@ -49,7 +55,7 @@ jobs:
              const variables = {
               owner: context.repo.owner,
               repo: context.repo.repo,
-              pr_num: 1
+              pr_num: pr_num
               
              }
             
